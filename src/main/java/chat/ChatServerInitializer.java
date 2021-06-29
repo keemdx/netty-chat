@@ -24,8 +24,18 @@ public class ChatServerInitializer extends ChannelInitializer<SocketChannel> {
     	// Netty에서 할당한 빈 채널 pipeline을 가져온다.
         ChannelPipeline pipeline = socketChannel.pipeline();
         
+        // if android client, remove this
         pipeline.addLast(sslCtx.newHandler(socketChannel.alloc()));
         pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+
+        // if android client, add this
+        // pipeline.addLast(new ByteToMessageDecoder() {
+        //     @Override
+        //     public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        //         out.add(in.readBytes(in.readableBytes()));
+        //     }
+        // });
+
         pipeline.addLast(new StringDecoder());
         pipeline.addLast(new StringEncoder());
         
